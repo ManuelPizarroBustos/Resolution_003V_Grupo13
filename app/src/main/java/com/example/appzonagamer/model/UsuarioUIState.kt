@@ -8,6 +8,7 @@ data class UsuarioUiState(
     val telefono: String = "",
     val favoritos: String = "",
     val aceptaTerminos: Boolean = false,
-    val errores: UsuarioErrores = UsuarioErrores()
+    val errores: UsuarioErrores = UsuarioErrores(),
+
 )
 

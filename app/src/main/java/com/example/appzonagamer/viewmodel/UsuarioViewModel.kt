@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.appzonagamer.model.UsuarioErrores
 import com.example.appzonagamer.model.UsuarioUiState
 import com.example.appzonagamer.di.DataSourceModule
-import com.example.appzonagamer.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
@@ -27,45 +26,34 @@ class UsuarioViewModel : ViewModel() {
         }
     }
 
-    // Consume la API externa y actualiza el estado
-    fun cargarCiudadDesdeApi() {
-        viewModelScope.launch {
-            val ciudad = repository.obtenerCiudadRandom()
-            _estado.update {
-                it.copy(
-                    errores = it.errores.copy(
-                        city = ciudad
-                    )
-                )
-            }
-        }
-    }
+
+
 
 
     fun onNombreChange(valor: String) {
-        _estado.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null)) }
+        _estado.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null),) }
     }
 
     fun onCorreoChange(valor: String) {
-        _estado.update { it.copy(correo = valor, errores = it.errores.copy(correo = null)) }
+        _estado.update { it.copy(correo = valor, errores = it.errores.copy(correo = null),) }
     }
 
     fun onContrasenaChange(valor: String) {
-        _estado.update { it.copy(contrasena = valor, errores = it.errores.copy(contrasena = null)) }
+        _estado.update { it.copy(contrasena = valor, errores = it.errores.copy(contrasena = null),) }
     }
 
     fun onTelefonoChange(valor: String) {
-        _estado.update { it.copy(telefono = valor, errores = it.errores.copy(telefono = null)) }
+        _estado.update { it.copy(telefono = valor, errores = it.errores.copy(telefono = null),) }
 
     }
 
     fun onFavoritosChange(valor: String) {
-        _estado.update { it.copy(favoritos = valor, errores = it.errores.copy(favoritos = null)) }
+        _estado.update { it.copy(favoritos = valor, errores = it.errores.copy(favoritos = null),) }
 
     }
 
     fun onAceptarTerminosChange(valor: Boolean) {
-        _estado.update { it.copy(aceptaTerminos = valor) }
+        _estado.update { it.copy(aceptaTerminos = valor,) }
     }
 
     fun validarFormulario(): Boolean {
@@ -128,9 +116,32 @@ class UsuarioViewModel : ViewModel() {
             errores.favoritos
         ).isNotEmpty()
 
-        _estado.update { it.copy(errores = errores) }
+        _estado.update { it.copy(errores = errores,) }
 
         return !hayErrores
 
+    }
+    fun cargarCiudadDesdeApi() {
+        viewModelScope.launch {
+            try {
+                val ciudad = repository.obtenerCiudadRandom()
+
+                _estado.update { estadoActual ->
+                    estadoActual.copy(
+                        errores = estadoActual.errores.copy(
+                            city = ciudad.ifBlank { "No se pudo obtener la ciudad" }
+                        )
+                    )
+                }
+            } catch (e: Exception) {
+                _estado.update { estadoActual ->
+                    estadoActual.copy(
+                        errores = estadoActual.errores.copy(
+                            city = "Error al consultar la API"
+                        )
+                    )
+                }
+            }
+        }
     }
 }
