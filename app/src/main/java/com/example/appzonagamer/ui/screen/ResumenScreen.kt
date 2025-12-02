@@ -22,5 +22,7 @@ fun ResumenScreen(viewModel: UsuarioViewModel) {
         Text(text = "Dirección: ${estado.telefono}")
         Text(text = "Contraseña: ${"*".repeat(n = estado.contrasena.length)}")
         Text(text = "Términos: ${if (estado.aceptaTerminos) "Aceptados" else "No aceptados"}")
+        Text(text = "Ciudad sugerida: ${estado.errores.city ?: "-"}")
+
     }
 }

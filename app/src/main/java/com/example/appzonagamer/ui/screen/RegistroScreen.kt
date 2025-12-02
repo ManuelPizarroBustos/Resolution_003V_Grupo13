@@ -27,7 +27,8 @@ import com.example.appzonagamer.viewmodel.UsuarioViewModel
 fun RegistroScreen(
     navController: NavController,
     viewModel: UsuarioViewModel
-) {
+)
+{
     val estado by viewModel.estado.collectAsState()
 
     Column(
@@ -106,6 +107,7 @@ fun RegistroScreen(
         Button(
             onClick = {
                 if (viewModel.validarFormulario()) {
+                    viewModel.registrarUsuario()  // 🔥 Guarda en Room
                     navController.navigate(route = "resumen")
                 }
             },
@@ -113,5 +115,14 @@ fun RegistroScreen(
         ) {
             Text(text = "Registrar")
         }
+        Button(
+            onClick = { viewModel.cargarCiudadDesdeApi() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Sugerir ciudad desde API externa")
+        }
+
+
     }
+
 }

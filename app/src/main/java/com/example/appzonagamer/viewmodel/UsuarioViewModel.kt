@@ -1,16 +1,46 @@
 package com.example.appzonagamer.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.appzonagamer.model.UsuarioErrores
 import com.example.appzonagamer.model.UsuarioUiState
+import com.example.appzonagamer.di.DataSourceModule
+import com.example.appzonagamer.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import kotlin.getValue
 
-class UsuarioViewModel : ViewModel(){
+class UsuarioViewModel : ViewModel() {
+
+    // Acceso perezoso al repositorio (así los tests no revientan)
+    private val repository by lazy { DataSourceModule.userRepository }
 
     private val _estado = MutableStateFlow(value = UsuarioUiState())
     val estado: StateFlow<UsuarioUiState> = _estado
+
+    fun registrarUsuario() {
+        val estadoActual = _estado.value
+        viewModelScope.launch {
+            repository.guardarUsuarioLocal(estadoActual)
+        }
+    }
+
+    // Consume la API externa y actualiza el estado
+    fun cargarCiudadDesdeApi() {
+        viewModelScope.launch {
+            val ciudad = repository.obtenerCiudadRandom()
+            _estado.update {
+                it.copy(
+                    errores = it.errores.copy(
+                        city = ciudad
+                    )
+                )
+            }
+        }
+    }
+
 
     fun onNombreChange(valor: String) {
         _estado.update { it.copy(nombre = valor, errores = it.errores.copy(nombre = null)) }
@@ -33,6 +63,7 @@ class UsuarioViewModel : ViewModel(){
         _estado.update { it.copy(favoritos = valor, errores = it.errores.copy(favoritos = null)) }
 
     }
+
     fun onAceptarTerminosChange(valor: Boolean) {
         _estado.update { it.copy(aceptaTerminos = valor) }
     }

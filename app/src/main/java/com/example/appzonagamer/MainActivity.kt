@@ -15,12 +15,15 @@ import com.example.appzonagamer.ui.theme.MyApplicationTheme
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Inicializamos Room + Retrofit + Repository
+        com.example.appzonagamer.di.DataSourceModule.init(applicationContext)
+
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
                 Scaffold { innerPadding ->
-                    // 🔥 Aquí insertamos el flujo de navegación en lugar de Greeting()
-                    Box(modifier = Modifier.padding(paddingValues = innerPadding)) {
+                    Box(modifier = Modifier.padding(innerPadding)) {
                         AppNavigation()
                     }
                 }
