@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Permisos requeridos para los componentes -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_SPECIAL_USE" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Mobile_01_android">
+
+        <!-- MainActivity - Launcher Activity -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Mobile_01_android">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+            <!-- Intent Filter para Deep Links - permite abrir la app desde enlaces externos -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- Esquema personalizado: veterinaria://open/consultas -->
+                <data
+                    android:scheme="veterinaria"
+                    android:host="open" />
+            </intent-filter>
+        </activity>
+
+        <!-- DetalleConsultaActivity - Activity para mostrar detalles de consulta -->
+        <activity
+            android:name=".DetalleConsultaActivity"
+            android:exported="false"
+            android:theme="@style/Theme.Mobile_01_android"
+            android:label="Detalle de Consulta" />
+
+        <!-- ReminderService - Foreground Service para recordatorios -->
+        <service
+            android:name=".service.ReminderService"
+            android:exported="false"
+            android:foregroundServiceType="specialUse">
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="Servicio de recordatorios de consultas veterinarias para notificar al usuario" />
+        </service>
+
+        <!-- VeterinariaProvider - Content Provider de solo lectura -->
+        <provider
+            android:name=".provider.VeterinariaProvider"
+            android:authorities="com.duoc.mobile_01_android.provider"
+            android:exported="true"
+            android:readPermission="android.permission.READ_OWNER_DATA" />
+
+        <!-- WifiConnectionReceiver - BroadcastReceiver para conectividad WiFi -->
+        <receiver
+            android:name=".receiver.WifiConnectionReceiver"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+</manifest>
