@@ -1,0 +1,21 @@
+# Gradle
+.gradle/
+build/
+
+# Local config (paths del PC, SDK)
+local.properties
+
+# IDE (Android Studio / IntelliJ)
+.idea/
+*.iml
+
+# Logs
+*.log
+
+# Keystores (NO subir)
+*.jks
+*.keystore
+
+# Mac / Windows basura
+.DS_Store
+Thumbs.db
